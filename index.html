@@ -162,11 +162,11 @@ requestAnimationFrame(frame)}
 // ---------- input ----------
 function tileAt(mx,my){const a=(mx/z-cam.x)/(TW/2),b=(my/z-cam.y)/(TH/2);return{x:Math.floor((a+b)/2),y:Math.floor((b-a)/2)}}
 cv.addEventListener('mousedown',e=>{if(e.button!==0)return;const t=tileAt(e.clientX,e.clientY);drag={sx:e.clientX,sy:e.clientY,cx:cam.x,cy:cam.y,moved:false,paint:mode==='place'&&B[placing].paint};if(drag.paint)tryPlace(t)});
-addEventListener('mousemove',e=>{hover=tileAt(e.clientX,e.clientY);if(!drag)return;if(drag.paint)return tryPlace(hover,true);const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>5)drag.moved=true;if(drag.moved){cam.x=drag.cx+dx/z;cam.y=drag.cy+dy/z}});
+addEventListener('mousemove',e=>{hover=tileAt(e.clientX,e.clientY);if(!drag)return;if(drag.paint)return tryPlace(hover,true);const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;if(Math.abs(dx)+Math.abs(dy)>(window._tch?18:5))drag.moved=true;if(drag.moved){cam.x=drag.cx+dx/z;cam.y=drag.cy+dy/z}});
 addEventListener('mouseup',e=>{if(!drag)return;const d=drag;drag=null;if(!d.moved&&!d.paint&&e.target===cv)clickTile(tileAt(e.clientX,e.clientY))});
 cv.addEventListener('wheel',e=>{e.preventDefault();const old=z;z=Math.min(2,Math.max(.45,z*(e.deltaY<0?1.1:.9)));cam.x+=e.clientX/z-e.clientX/old;cam.y+=e.clientY/z-e.clientY/old},{passive:false});
 let pinch=null;const fire=(el,type,t)=>el.dispatchEvent(new MouseEvent(type,{clientX:t.clientX,clientY:t.clientY,button:0,bubbles:true}));
-cv.addEventListener('touchstart',e=>{e.preventDefault();audioInit();if(e.touches.length===1)fire(cv,'mousedown',e.touches[0]);else{drag=null;const[a,b]=e.touches;pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),z}}},{passive:false});
+cv.addEventListener('touchstart',e=>{e.preventDefault();window._tch=1;audioInit();if(e.touches.length===1)fire(cv,'mousedown',e.touches[0]);else{drag=null;const[a,b]=e.touches;pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),z}}},{passive:false});
 cv.addEventListener('touchmove',e=>{e.preventDefault();if(pinch&&e.touches.length===2){const[a,b]=e.touches,mx=(a.clientX+b.clientX)/2,my=(a.clientY+b.clientY)/2,old=z;z=Math.min(2,Math.max(.45,pinch.z*Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pinch.d));cam.x+=mx/z-mx/old;cam.y+=my/z-my/old}else if(!pinch)fire(window,'mousemove',e.touches[0])},{passive:false});
 cv.addEventListener('touchend',e=>{e.preventDefault();if(pinch){if(!e.touches.length)pinch=null;return}fire(cv,'mouseup',e.changedTouches[0]);hover=null},{passive:false});
 addEventListener('pointerdown',()=>audioInit());
