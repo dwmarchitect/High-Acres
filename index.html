@@ -101,7 +101,7 @@ function track(k){S.stats[k]=(S.stats[k]||0)+1;renderQuests()}
 function addInv(k){S.inv[k]=(S.inv[k]||0)+1}
 // ---------- canvas ----------
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');let W,H,z=.7,cam={x:0,y:0};
-function resize(){W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR}addEventListener('resize',resize);resize();
+function resize(){W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px'}addEventListener('resize',resize);resize();
 
 function iso(x,y){return[(x-y)*TW/2+cam.x,(x+y)*TH/2+cam.y]}
 function center(){let sx=0,sy=0,n=0;for(const k in S.owned){const[a,b]=k.split(',').map(Number);sx+=a*CH+CH/2;sy+=b*CH+CH/2;n++}const mx=sx/n,my=sy/n,cx=(mx-my)*TW/2,cy=(mx+my)*TH/2;cam.x=innerWidth/2/z-cx;cam.y=innerHeight/2/z-cy+20}center();
